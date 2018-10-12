@@ -66,7 +66,7 @@ command, we can get a list of collections in the database
 as follows.
 ```{r getl, eval=TRUE}
 if (verifyHasMongoCmd()) {
-  head(c1 <- listAllCollections(url=URL_txregInAWS(), db="txregnet"))
+  head(c1 <- txregCollections(url=URL_txregInAWS(), db="txregnet"))
   }
 ```
 Otherwise, as long as `r CRANpkg("mongolite")` is installed,

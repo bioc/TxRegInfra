@@ -3,18 +3,28 @@
 
 #' list collections in AWS mongo server for txregnet
 #' @import rjson
-#' @param ignore integer vector telling which lines of mongo db.getCollectionNames() result should be ignored
+#' @param ignore defaults to NULL, otherwise an integer vector telling which lines of mongo db.getCollectionNames() result should be ignored
 #' @param url a valid mongodb URL
 #' @param db character(1) db name
+#' @param cliparms character(1) added parameters for mongo CLI call
 #' @return a character vector of collection names
 #' @examples
 #' if (verifyHasMongoCmd()) txregCollections()[seq_len(5)]
 #' @export
-txregCollections = function(ignore = seq_len(3), url = URL_txregInAWS(), db = "txregnet") {
-    dbref = sprintf("%s/%s", url, db)
-    lis = system2("mongo", args=c(dbref, "--eval", "'db.getCollectionNames()'"), stdout = TRUE)
-    rjson::fromJSON(paste0(lis[-c(ignore)], collapse = ""))
+txregCollections = function (ignore = NULL, url = URL_txregInAWS(), db = "txregnet", 
+    cliparms = "--quiet --eval") 
+{
+    url = gsub("test", db, url)
+    lis = system2("mongo", args = c(url, cliparms, "'db.getCollectionNames()'"), 
+        stdout = TRUE)
+    if (!is.null(ignore)) 
+        lis = lis[-ignore]
+    cstart = grep("^\\[$", lis)
+    if (length(cstart) == 0) 
+        stop("could not find '[' isolated in the response.")
+    rjson::fromJSON(paste0(lis[(cstart):length(lis)], collapse = ""))
 }
+
 
 #' get names of fields in a collection in remote txregnet
 #' @param collection character(1) name of collection
@@ -271,3 +281,8 @@ sbov = function(rme, gr, map = basicCfieldsMap(), docTypeName = "type") {
     RaggedExperiment(assay = GRangesList(content), colData = cd)
 }
 
+txregCollections.old = function(ignore = seq_len(3), url = URL_txregInAWS(), db = "txregnet") {
+    dbref = sprintf("%s/%s", url, db)
+    lis = system2("mongo", args=c(dbref, "--eval", "'db.getCollectionNames()'"), stdout = TRUE)
+    rjson::fromJSON(paste0(lis[-c(ignore)], collapse = ""))
+}

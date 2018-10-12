@@ -4,15 +4,17 @@
 \alias{txregCollections}
 \title{list collections in AWS mongo server for txregnet}
 \usage{
-txregCollections(ignore = seq_len(3), url = URL_txregInAWS(),
-  db = "txregnet")
+txregCollections(ignore = NULL, url = URL_txregInAWS(),
+  db = "txregnet", cliparms = "--quiet --eval")
 }
 \arguments{
-\item{ignore}{integer vector telling which lines of mongo db.getCollectionNames() result should be ignored}
+\item{ignore}{defaults to NULL, otherwise an integer vector telling which lines of mongo db.getCollectionNames() result should be ignored}
 
 \item{url}{a valid mongodb URL}
 
 \item{db}{character(1) db name}
+
+\item{cliparms}{character(1) added parameters for mongo CLI call}
 }
 \value{
 a character vector of collection names
