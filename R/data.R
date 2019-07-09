@@ -96,5 +96,6 @@
 #' @docType data
 #' @format a list of GRanges instances
 #' @examples
-#' names(mcols(demo_fimo_granges))
+#' names(demo_fimo_granges)
+#' head(mcols(demo_fimo_granges$VDR[[1]]))
 "demo_fimo_granges"
